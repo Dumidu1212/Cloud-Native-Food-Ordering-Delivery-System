@@ -1,0 +1,11 @@
+# Node.js
+node_modules/
+
+# Flutter
+.flutter-plugins
+.dart_tool
+build/
+
+# React
+node_modules/
+build/
