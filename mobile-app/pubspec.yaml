@@ -1,1 +1,3 @@
-## For Flutter configuration
+name: "Cloud Native Food Ordering & Delivery System"
+environment:
+  sdk: '^3.7.0'
