@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "API Gateway for the Food Ordering & Delivery System",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.2"
   }
 }
