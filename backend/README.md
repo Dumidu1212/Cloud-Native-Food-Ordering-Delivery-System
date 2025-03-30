@@ -19,63 +19,106 @@ Payment & Notification Integration
 
 
 
-├── backend/                            # Backend Microservices
-│   ├── api-gateway/                  # API Gateway Service
+├── backend/                                        # All backend microservices
+│   ├── .env.example                                # Global backend environment variable template (e.g., PORT, MONGODB_URI, JWT_SECRET)
+│   ├── api-gateway/                                # API Gateway Service: Central entry point for all requests
+│   │   ├── config/                                 # Configuration files (DB connections, API keys, etc.)
 │   │   ├── src/
-│   │   │   ├── index.js              # Entry point for the API Gateway
-│   │   │   └── routes/               # Gateway routes and middleware
-│   │   ├── Dockerfile                # Container instructions for API Gateway
-│   │   ├── package.json              # Node.js dependencies and scripts
-│   │   └── README.md
-│   │
-│   ├── restaurant-service/           # Restaurant Management Service
+│   │   │   ├── app.js                              # Main Express app (includes health-check route)
+│   │   │   └── routes/                             # Gateway routes and middleware
+│   │   │       └── gatewayRoutes.js                # API routing definitions
+│   │   ├── Dockerfile                              # Docker configuration for API Gateway
+│   │   ├── package.json                            # Dependencies and scripts (with "type": "module")
+│   │   └── README.md                               # API Gateway documentation
+│   ├── user-service/                               # User Management Service (handles Admin, Customer, Delivery)
+│   │   ├── config/
 │   │   ├── src/
-│   │   │   ├── controllers/          # Business logic for restaurant and menu operations
-│   │   │   ├── models/               # MongoDB schemas for Restaurant and MenuItem
-│   │   │   ├── routes/               # RESTful endpoints for restaurant operations
-│   │   │   └── index.js              # Service entry point
-│   │   ├── Dockerfile
+│   │   │   ├── app.js                              # Express app for user-service
+│   │   │   ├── controllers/
+│   │   │   │   └── userController.js               # Logic for register, login, and profile update
+│   │   │   ├── models/
+│   │   │   │   └── User.js                         # MongoDB schema for users
+│   │   │   ├── routes/
+│   │   │   │   └── userRoutes.js                   # REST endpoints for user operations
+│   │   │   ├── services/
+│   │   │   │   └── authService.js                  # JWT handling, password hashing, etc.
+│   │   │   └── utils/
+│   │   │       └── logger.js                       # Shared logging utility
+│   │   ├── Dockerfile                              # Docker config for user-service
 │   │   ├── package.json
+│   │   ├── .env.example
 │   │   └── README.md
-│   │
-│   ├── order-service/                # Order Management Service
+│   ├── restaurant-service/                         # Restaurant & Menu Management Service
+│   │   ├── config/
 │   │   ├── src/
-│   │   │   ├── controllers/          # Order processing and management logic
-│   │   │   ├── models/               # MongoDB schemas for Order and OrderItem
-│   │   │   ├── routes/               # RESTful endpoints for order operations
-│   │   │   └── index.js              # Service entry point
-│   │   ├── Dockerfile
+│   │   │   ├── app.js                              # Express app for restaurant-service
+│   │   │   ├── controllers/
+│   │   │   │   └── restaurantController.js         # Logic for restaurant and menu operations
+│   │   │   ├── models/
+│   │   │   │   ├── Restaurant.js                   # Schema for restaurant details
+│   │   │   │   └── MenuItem.js                       # Schema for menu items
+│   │   │   └── routes/
+│   │   │       └── restaurantRoutes.js             # Endpoints for restaurant management
+│   │   ├── Dockerfile                              # Docker configuration for restaurant-service
 │   │   ├── package.json
+│   │   ├── .env.example
 │   │   └── README.md
-│   │
-│   ├── delivery-service/             # Delivery Management Service
+│   ├── order-service/                              # Order Management Service
+│   │   ├── config/
 │   │   ├── src/
-│   │   │   ├── controllers/          # Business logic for driver assignment and tracking
-│   │   │   ├── models/               # MongoDB schemas for Delivery
-│   │   │   ├── routes/               # RESTful endpoints for delivery operations
-│   │   │   └── index.js              # Service entry point
-│   │   ├── Dockerfile
+│   │   │   ├── app.js                              # Express app for order-service
+│   │   │   ├── controllers/
+│   │   │   │   └── orderController.js              # Logic for order processing
+│   │   │   ├── models/
+│   │   │   │   ├── Order.js                        # Schema for orders
+│   │   │   │   └── OrderItem.js                    # Schema for order items
+│   │   │   └── routes/
+│   │   │       └── orderRoutes.js                  # Endpoints for order operations
+│   │   ├── Dockerfile                              # Docker configuration for order-service
 │   │   ├── package.json
+│   │   ├── .env.example
 │   │   └── README.md
-│   │
-│   ├── payment-service/              # Payment Integration Service
+│   ├── delivery-service/                           # Delivery Management Service
+│   │   ├── config/
 │   │   ├── src/
-│   │   │   ├── controllers/          # Payment processing logic and transaction logging
-│   │   │   ├── models/               # MongoDB schemas for Payment
-│   │   │   ├── routes/               # RESTful endpoints for payment operations
-│   │   │   └── index.js              # Service entry point
-│   │   ├── Dockerfile
+│   │   │   ├── app.js                              # Express app for delivery-service
+│   │   │   ├── controllers/
+│   │   │   │   └── deliveryController.js           # Logic for delivery assignments and tracking
+│   │   │   ├── models/
+│   │   │   │   └── Delivery.js                     # Schema for delivery details
+│   │   │   └── routes/
+│   │   │       └── deliveryRoutes.js               # Endpoints for delivery operations
+│   │   ├── Dockerfile                              # Docker configuration for delivery-service
 │   │   ├── package.json
+│   │   ├── .env.example
 │   │   └── README.md
-│   │
-│   ├── notification-service/         # Notification Service
+│   ├── payment-service/                            # Payment Integration Service
+│   │   ├── config/
 │   │   ├── src/
-│   │   │   ├── controllers/          # Logic for sending SMS/email notifications
-│   │   │   ├── routes/               # RESTful endpoints for notifications
-│   │   │   └── index.js              # Service entry point
-│   │   ├── Dockerfile
+│   │   │   ├── app.js                              # Express app for payment-service
+│   │   │   ├── controllers/
+│   │   │   │   └── paymentController.js            # Logic for processing payments
+│   │   │   ├── models/
+│   │   │   │   └── Payment.js                      # Schema for payment transactions
+│   │   │   └── routes/
+│   │   │       └── paymentRoutes.js                # Endpoints for payment operations
+│   │   ├── Dockerfile                              # Docker configuration for payment-service
 │   │   ├── package.json
+│   │   ├── .env.example
 │   │   └── README.md
-│   │
-│   └── common/                       # Shared libraries and utilities (e.g., logging, error handling)
+│   ├── notification-service/                       # Notification Service
+│   │   ├── config/
+│   │   ├── src/
+│   │   │   ├── app.js                              # Express app for notification-service
+│   │   │   ├── controllers/
+│   │   │   │   └── notificationController.js       # Logic for sending notifications (SMS, email)
+│   │   │   └── routes/
+│   │   │       └── notificationRoutes.js           # Endpoints for notifications
+│   │   ├── Dockerfile                              # Docker configuration for notification-service
+│   │   ├── package.json
+│   │   ├── .env.example
+│   │   └── README.md
+│   └── common/                                     # Shared utilities for backend microservices
 │       └── utils/
+│           └── logger.js                           # Common logging utility
+│

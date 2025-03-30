@@ -1,12 +1,35 @@
-# Node.js
+# Node.js dependencies
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
 .env
+.env.local
+.env.*.local
 
-# Flutter
-.flutter-plugins
-.dart_tool
+# Build outputs
+dist/
 build/
 
-# React
-node_modules/
-build/
+# Flutter build artifacts
+**/build/
+.dart_tool/
+.packages
+*.iml
+
+# IDE files
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Docker overrides
+docker-compose.override.yml
