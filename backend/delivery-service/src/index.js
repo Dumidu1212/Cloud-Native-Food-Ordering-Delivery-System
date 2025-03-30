@@ -1,13 +1,26 @@
 import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import deliveryRoutes from './routes/deliveryRoutes.js';
+
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3003
+const PORT = process.env.PORT || 3004;
 
-// Basic route for health check
+app.use(express.json());
+
 app.get('/', (req, res) => {
-  res.status(200).send('Delivery Service is runnig.');
+  res.status(200).send('Delivery Service is running.');
 });
 
-app.listen(port, () => {
-  console.log(`Delivery Service Listening On Port ${port}`);
-});
+app.use('/api/delivery', deliveryRoutes);
+
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    app.listen(PORT, () => console.log(`Delivery Service listening on port ${PORT}`));
+  })
+  .catch(error => {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  });

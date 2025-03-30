@@ -1,13 +1,31 @@
 import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import restaurantRoutes from './routes/restaurantRoutes.js';
+
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
-// Basic route for health check
-app.get('/', (req,res) => {
-  res.status(200).send('Restaurant Service is runnig.');
+// Middleware
+app.use(express.json());
+
+// Routes
+app.use('/api/restaurants', restaurantRoutes);
+
+// Health-check route
+app.get('/', (req, res) => {
+  res.status(200).send('Restaurant Service is running.');
 });
 
-app.listen(port, () => {
-  console.log(`Restaurant Service Listening On Port ${port}`);
-});
+// Connect to MongoDB and start server
+mongoose
+  .connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    app.listen(PORT, () => console.log(`Restaurant Service listening on port ${PORT}`));
+  })
+  .catch(error => {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  });

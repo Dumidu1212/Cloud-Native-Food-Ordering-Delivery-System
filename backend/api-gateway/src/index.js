@@ -1,17 +1,22 @@
 import express from 'express';
+import dotenv from 'dotenv';
+import gatewayRoutes from './routes/gatewayRoutes.js';
+
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-// Middleware to parse JSON requests
 app.use(express.json());
 
-// Basic route for health check
-app.get('/', (req,res) => {
-  res.status(200).send('API Gateway is runnig.');
+// Use the gateway routes for all API requests
+app.use('/api', gatewayRoutes);
+
+// Basic health-check route
+app.get('/', (req, res) => {
+  res.status(200).send('API Gateway is running.');
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`API Gateway Listening On Port ${port}`);
+app.listen(PORT, () => {
+  console.log(`API Gateway listening on port ${PORT}`);
 });
