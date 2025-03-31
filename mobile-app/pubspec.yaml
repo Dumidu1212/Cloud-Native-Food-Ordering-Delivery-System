@@ -1,3 +1,7 @@
-name: "Cloud Native Food Ordering & Delivery System"
+name: cloud_native_food_ordering_delivery_system
 environment:
   sdk: '^3.7.0'
+dependencies:
+  http: ^1.3.0
+  flutter_secure_storage: ^9.2.4
+  provider: ^6.1.4
