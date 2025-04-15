@@ -3,11 +3,13 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class CustomerRegistration extends StatefulWidget {
+  const CustomerRegistration({super.key});
+
   @override
-  _CustomerRegistrationState createState() => _CustomerRegistrationState();
+  CustomerRegistrationState createState() => CustomerRegistrationState();
 }
 
-class _CustomerRegistrationState extends State<CustomerRegistration> {
+class CustomerRegistrationState extends State<CustomerRegistration> {
   final _formKey = GlobalKey<FormState>();
   String name = '';
   String email = '';
@@ -15,70 +17,84 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   String errorMessage = '';
 
   Future<void> _register() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        final response = await http.post(
-          Uri.parse('https://api.yourdomain.com/api/users/register'),
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode({
-            'name': name,
-            'email': email,
-            'password': password,
-            'role': 'customer'  // Fixed role for customer registration
-          }),
-        );
-        if (response.statusCode == 201) {
-          // Registration successful; navigate to login screen
-          Navigator.pushReplacementNamed(context, '/login');
-        } else {
-          setState(() {
-            errorMessage = 'Registration failed: ${response.body}';
-          });
-        }
-      } catch (error) {
+    if (!_formKey.currentState!.validate()) return;
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://api.yourdomain.com/api/users/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'name': name,
+          'email': email,
+          'password': password,
+          'role': 'customer', // Fixed role for customer registration
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        // Registration is successful
+        if (!mounted) return;
+        // Navigate to the unified login screen after successful registration
+        Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        if (!mounted) return;
         setState(() {
-          errorMessage = 'An error occurred. Please try again.';
+          errorMessage = 'Registration failed: ${response.body}';
         });
       }
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        errorMessage = 'An error occurred. Please try again.';
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Customer Registration')),
+      appBar: AppBar(title: const Text('Customer Registration')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
               children: [
                 if (errorMessage.isNotEmpty)
-                  Text(errorMessage, style: TextStyle(color: Colors.red)),
+                  Text(errorMessage, style: const TextStyle(color: Colors.red)),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Name'),
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Please enter your name' : null,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                  validator:
+                      (value) =>
+                          value == null || value.isEmpty
+                              ? 'Please enter your name'
+                              : null,
                   onChanged: (value) => name = value,
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Email'),
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Please enter your email' : null,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  validator:
+                      (value) =>
+                          value == null || value.isEmpty
+                              ? 'Please enter your email'
+                              : null,
                   onChanged: (value) => email = value,
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: const InputDecoration(labelText: 'Password'),
                   obscureText: true,
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Please enter your password' : null,
+                  validator:
+                      (value) =>
+                          value == null || value.isEmpty
+                              ? 'Please enter your password'
+                              : null,
                   onChanged: (value) => password = value,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _register,
-                  child: Text('Register as Customer'),
+                  child: const Text('Register as Customer'),
                 ),
               ],
             ),
